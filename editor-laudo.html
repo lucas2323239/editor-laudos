@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editor de Laudo</title>
+
+    <!-- TinyMCE com sua chave de API -->
+    <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <script>
+      tinymce.init({
+        selector: '#editor',
+        height: 400,
+        menubar: false,
+        plugins: 'lists link table',
+        toolbar:
+          'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link table',
+      });
+
+      function salvarConteudo() {
+        const conteudo = tinymce.get('editor').getContent();
+        alert("Conteúdo formatado:\n\n" + conteudo);
+
+        // Aqui você pode enviar via fetch para o Supabase ou API externa
+        // Exemplo de envio para Supabase:
+        /*
+        fetch('https://sua-api.com/salvar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ html: conteudo })
+        })
+        .then(response => response.json())
+        .then(data => console.log('Sucesso:', data))
+        .catch(error => console.error('Erro:', error));
+        */
+      }
+    </script>
+  </head>
+  <body style="padding: 20px">
+    <h3>Editor de Laudo</h3>
+    <textarea id="editor">Digite o laudo aqui...</textarea>
+    <br />
+    <button onclick="salvarConteudo()">Salvar</button>
+  </body>
+</html>

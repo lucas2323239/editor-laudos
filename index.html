@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Editor de Laudo</title>
+<head>
+  <meta charset="utf-8">
+  <title>Editor de Laudo</title>
+  <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
 
-    <!-- TinyMCE com sua chave de API -->
-    <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    
-    <script>
-      tinymce.init({
-        selector: '#editor',
-        height: 400,
-        menubar: false,
-        plugins: 'lists link table',
-        toolbar:
-          'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link table',
-      });
+<h2>Editor de Laudo</h2>
 
-      function salvarConteudo() {
-        const conteudo = tinymce.get('editor').getContent();
-        alert("Conteúdo formatado:\n\n" + conteudo);
+<textarea id="editor">
+<h3>Resultado:</h3>
+<p><strong>MATERIAL:</strong> Soro<br><strong>MÉTODO:</strong> Nefelometria<br><strong>VALORES DE REFERÊNCIA:</strong> 51.0 A 117.0 mg/dL</p>
+<p><strong>OBSERVAÇÃO:</strong> ...</p>
+</textarea>
 
-        // Aqui você pode enviar via fetch para o Supabase ou API externa
-        // Exemplo de envio para Supabase:
-        /*
-        fetch('https://sua-api.com/salvar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ html: conteudo })
-        })
-        .then(response => response.json())
-        .then(data => console.log('Sucesso:', data))
-        .catch(error => console.error('Erro:', error));
-        */
-      }
-    </script>
-  </head>
-  <body style="padding: 20px">
-    <h3>Editor de Laudo</h3>
-    <textarea id="editor">Digite o laudo aqui...</textarea>
-    <br />
-    <button onclick="salvarConteudo()">Salvar</button>
-  </body>
+<br>
+<button onclick="enviarConteudo()">Salvar</button>
+
+<script>
+  tinymce.init({
+    selector: '#editor',
+    height: 300,
+    menubar: false,
+    plugins: 'lists link',
+    toolbar: 'bold italic underline | bullist numlist | undo redo',
+  });
+
+  function enviarConteudo() {
+    const conteudo = tinymce.get('editor').getContent();
+    window.parent.postMessage(conteudo, "*"); // <- AQUI ESTÁ A CORREÇÃO
+  }
+</script>
+
+</body>
 </html>

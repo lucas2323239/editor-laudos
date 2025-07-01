@@ -7,30 +7,26 @@
 </head>
 <body>
 
-<h2>Editor de Laudo</h2>
-
 <textarea id="editor">
 <h3>Resultado:</h3>
 <p><strong>MATERIAL:</strong> Soro<br><strong>MÉTODO:</strong> Nefelometria<br><strong>VALORES DE REFERÊNCIA:</strong> 51.0 A 117.0 mg/dL</p>
 <p><strong>OBSERVAÇÃO:</strong> ...</p>
 </textarea>
 
-<br>
-<button onclick="enviarConteudo()">Salvar</button>
-
 <script>
   tinymce.init({
     selector: '#editor',
-    height: 300,
+    height: 500,
     menubar: false,
     plugins: 'lists link',
     toolbar: 'bold italic underline | bullist numlist | undo redo',
+    setup: function (editor) {
+      editor.on('Change KeyUp', function () {
+        const conteudo = editor.getContent();
+        window.parent.postMessage(conteudo, "*");
+      });
+    }
   });
-
-  function enviarConteudo() {
-    const conteudo = tinymce.get('editor').getContent();
-    window.parent.postMessage(conteudo, "*"); // <- AQUI ESTÁ A CORREÇÃO
-  }
 </script>
 
 </body>

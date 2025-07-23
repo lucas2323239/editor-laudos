@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Editor de Laudo</title>
   <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
 
 <textarea id="editor">
-<h3>Resultado:</h3>
-<p><strong>MATERIAL:</strong> Soro<br><strong>MÉTODO:</strong> Nefelometria<br><strong>VALORES DE REFERÊNCIA:</strong> 51.0 A 117.0 mg/dL</p>
+<h3 style="display: inline-block; margin: 0;">Resultado:</h3>
+<div style="display: inline-block; width: 45%; margin-left: 55%; vertical-align: middle; font-weight: normal;">
+  <strong>VALORES DE REFERÊNCIA:</strong><br>
+  51.0 a 117.0 mg/dL
+</div>
+
+<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+  <tr>
+    <td style="width: 50%; vertical-align: top;">
+      <p><strong>MATERIAL:</strong> Soro</p>
+      <p><strong>MÉTODO:</strong> Nefelometria</p>
+    </td>
+    <td style="width: 50%; vertical-align: top; padding-left: 20px; text-align: left;">
+      <!-- Espaço reservado -->
+    </td>
+  </tr>
+</table>
 <p><strong>OBSERVAÇÃO:</strong> ...</p>
 </textarea>
 
@@ -19,15 +34,22 @@
     height: 500,
     menubar: false,
     plugins: 'lists link',
-    toolbar: 'bold italic underline | bullist numlist | undo redo',
+    toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
     setup: function (editor) {
       editor.on('Change KeyUp', function () {
         const conteudo = editor.getContent();
         window.parent.postMessage(conteudo, "*");
       });
-    }
+    },
+    content_style: `
+      body { font-family: Arial; font-size: 14px; line-height: 1.2; }
+      table { border-collapse: collapse !important; border: none !important; }
+      td, th { border: none !important; padding: 0 8px !important; }
+      p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+    `
   });
 </script>
 
 </body>
 </html>
+

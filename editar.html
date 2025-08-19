@@ -4,46 +4,71 @@
   <meta charset="utf-8" />
   <title>Editar Laudo</title>
   <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    // Configura o Supabase
+    const supabaseUrl = 'https://txsbhqqnfhxznyokyvfi.supabase.co'; // Substitua pelo seu URL
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c2JocXFuZmh4em55b2t5dmZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1ODQ3MTIsImV4cCI6MjA2NzE2MDcxMn0.6R_XIMIpXjwq160eQkHFbmeHDCaYRbebh_SpxU_lWL4';                   // Substitua pela sua chave anônima
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Função para pegar parâmetro da URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const sigla = getQueryParam("sigla");
+
+    // Função para buscar o laudo pelo sigla
+    async function carregarLaudo(sigla) {
+      if (!sigla) return "<p>Sigla não informada.</p>";
+      const { data, error } = await supabase
+        .from('laudos')
+        .select('conteudo')
+        .eq('sigla', sigla)
+        .single();
+
+      if (error) {
+        console.error(error);
+        return `<p>Erro ao carregar laudo: ${error.message}</p>`;
+      }
+
+      return data.conteudo || "<p>Laudo vazio.</p>";
+    }
+
+    // Inicializa o TinyMCE com conteúdo carregado do Supabase
+    (async () => {
+      const conteudoInicial = await carregarLaudo(sigla);
+
+      tinymce.init({
+        selector: '#editor',
+        height: 500,
+        menubar: false,
+        plugins: 'lists link',
+        toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
+        setup: function (editor) {
+          // Envia conteúdo atualizado para o FlutterFlow via postMessage
+          editor.on('Change KeyUp', function () {
+            const conteudo = editor.getContent();
+            window.parent.postMessage(conteudo, "*");
+          });
+        },
+        init_instance_callback: function (editor) {
+          // Seta o conteúdo vindo do Supabase
+          editor.setContent(conteudoInicial);
+        },
+        content_style: `
+          body { font-family: Arial; font-size: 14px; line-height: 1.2; }
+          table { border-collapse: collapse !important; border: none !important; }
+          td, th { border: none !important; padding: 0 8px !important; }
+          p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+        `
+      });
+    })();
+  </script>
 </head>
 <body>
-
-<textarea id="editor"></textarea>
-
-<script>
-  // Função para pegar parâmetro da URL
-  function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-
-  // Pega conteúdo do parâmetro "conteudo"
-  const conteudoInicial = getQueryParam("conteudo") || "<p>Carregando laudo...</p>";
-
-  tinymce.init({
-    selector: '#editor',
-    height: 500,
-    menubar: false,
-    plugins: 'lists link',
-    toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
-    setup: function (editor) {
-      // Envia conteúdo atualizado para o FlutterFlow via postMessage
-      editor.on('Change KeyUp', function () {
-        const conteudo = editor.getContent();
-        window.parent.postMessage(conteudo, "*");
-      });
-    },
-    init_instance_callback: function (editor) {
-      // Seta o conteúdo vindo da URL (decodificado)
-      editor.setContent(decodeURIComponent(conteudoInicial));
-    },
-    content_style: `
-      body { font-family: Arial; font-size: 14px; line-height: 1.2; }
-      table { border-collapse: collapse !important; border: none !important; }
-      td, th { border: none !important; padding: 0 8px !important; }
-      p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
-    `
-  });
-</script>
-
+  <textarea id="editor"></textarea>
 </body>
 </html>

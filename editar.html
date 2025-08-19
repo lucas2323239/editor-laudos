@@ -8,17 +8,11 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     // Configura o Supabase
-    const supabaseUrl = 'https://txsbhqqnfhxznyokyvfi.supabase.co'; // Substitua pelo seu URL
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c2JocXFuZmh4em55b2t5dmZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1ODQ3MTIsImV4cCI6MjA2NzE2MDcxMn0.6R_XIMIpXjwq160eQkHFbmeHDCaYRbebh_SpxU_lWL4';                   // Substitua pela sua chave anônima
+    const supabaseUrl = 'https://txsbhqqnfhxznyokyvfi.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c2JocXFuZmh4em55b2t5dmZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1ODQ3MTIsImV4cCI6MjA2NzE2MDcxMn0.6R_XIMIpXjwq160eQkHFbmeHDCaYRbebh_SpxU_lWL4';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Função para pegar parâmetro da URL
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    const sigla = getQueryParam("sigla");
+    const sigla = "GLI"; // sigla fixa para teste
 
     // Função para buscar o laudo pelo sigla
     async function carregarLaudo(sigla) {
@@ -48,14 +42,12 @@
         plugins: 'lists link',
         toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
         setup: function (editor) {
-          // Envia conteúdo atualizado para o FlutterFlow via postMessage
           editor.on('Change KeyUp', function () {
             const conteudo = editor.getContent();
             window.parent.postMessage(conteudo, "*");
           });
         },
         init_instance_callback: function (editor) {
-          // Seta o conteúdo vindo do Supabase
           editor.setContent(conteudoInicial);
         },
         content_style: `

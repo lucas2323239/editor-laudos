@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Editar Laudo</title>
+  <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+
+<textarea id="editor"></textarea>
+
+<script>
+  // Função para pegar parâmetro da URL
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Pega conteúdo do parâmetro "conteudo"
+  const conteudoInicial = getQueryParam("conteudo") || "<p>Carregando laudo...</p>";
+
+  tinymce.init({
+    selector: '#editor',
+    height: 500,
+    menubar: false,
+    plugins: 'lists link',
+    toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
+    setup: function (editor) {
+      // Envia conteúdo atualizado para o FlutterFlow via postMessage
+      editor.on('Change KeyUp', function () {
+        const conteudo = editor.getContent();
+        window.parent.postMessage(conteudo, "*");
+      });
+    },
+    init_instance_callback: function (editor) {
+      // Seta o conteúdo vindo da URL (decodificado)
+      editor.setContent(decodeURIComponent(conteudoInicial));
+    },
+    content_style: `
+      body { font-family: Arial; font-size: 14px; line-height: 1.2; }
+      table { border-collapse: collapse !important; border: none !important; }
+      td, th { border: none !important; padding: 0 8px !important; }
+      p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+    `
+  });
+</script>
+
+</body>
+</html>

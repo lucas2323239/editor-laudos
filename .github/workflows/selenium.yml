@@ -1,0 +1,25 @@
+name: Run Selenium Bot
+
+on:
+  workflow_dispatch:   # permite rodar manualmente
+  schedule:
+    - cron: "0 12 * * *"   # executa todo dia às 12h (UTC) - opcional
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar dependências
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          python -m pip install --upgrade pip
+          pip install selenium
+
+      - name: Executar bot
+        run: |
+          python robor.py

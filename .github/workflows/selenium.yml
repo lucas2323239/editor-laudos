@@ -20,9 +20,11 @@ jobs:
 
           # Detectar versão principal do Chromium
           CHROME_VERSION=$(chromium --version | awk '{print $2}' | cut -d '.' -f1)
+          echo "Chrome major version: $CHROME_VERSION"
 
           # Baixar Chromedriver compatível
           CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          echo "Chromedriver version: $CHROMEDRIVER_VERSION"
           wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/

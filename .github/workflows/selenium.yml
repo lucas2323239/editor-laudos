@@ -16,8 +16,19 @@ jobs:
       - name: Instalar Chromium, Chromedriver e Selenium
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium chromium-driver python3-pip
-          
+          sudo apt-get install -y chromium python3-pip unzip wget
+
+          # Detectar versão principal do Chromium
+          CHROME_VERSION=$(chromium --version | awk '{print $2}' | cut -d '.' -f1)
+
+          # Baixar Chromedriver compatível
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/
+
+          # Instalar Selenium
           python3 -m pip install --upgrade pip
           pip install selenium
 

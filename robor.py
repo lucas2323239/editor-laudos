@@ -2,8 +2,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from time import sleep
 
+# Configuração do navegador
+chrome_options = Options()
+chrome_options.binary_location = "/usr/bin/chromium"  # caminho correto no Ubuntu
+
+driver = webdriver.Chrome(options=chrome_options)
 
 def login_inpi(driver, usuario: str, senha: str):
     """Realiza o login no sistema do INPI"""
@@ -59,9 +65,6 @@ def voltar_paginas(driver):
 
 
 if __name__ == "__main__":
-    # Configuração do navegador
-    driver = webdriver.Chrome()
-
     try:
         login_inpi(driver, usuario="pontocomr", senha="Registro12")
         navegar_pedidos(driver)
@@ -72,5 +75,4 @@ if __name__ == "__main__":
 
     finally:
         driver.quit()
-
 

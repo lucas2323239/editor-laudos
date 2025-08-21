@@ -3,7 +3,7 @@ name: Run Selenium Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 12 * * *"
+    - cron: "0 12 * * *" # roda todo dia às 12h UTC
 
 jobs:
   run-bot:
@@ -16,19 +16,11 @@ jobs:
       - name: Instalar Chromium, Chromedriver e Selenium
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium python3-pip unzip wget
+          sudo apt-get install -y chromium-browser chromium-chromedriver python3-pip
 
-          # Detectar versão principal do Chromium
-          CHROME_VERSION=$(chromium --version | awk '{print $2}' | cut -d '.' -f1)
-          echo "Chrome major version: $CHROME_VERSION"
-
-          # Baixar Chromedriver compatível
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          echo "Chromedriver version: $CHROMEDRIVER_VERSION"
-          wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/
+          # Verificar versões instaladas
+          chromium-browser --version
+          chromedriver --version
 
           # Instalar Selenium
           python3 -m pip install --upgrade pip

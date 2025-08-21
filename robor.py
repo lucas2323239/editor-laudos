@@ -1,15 +1,19 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from time import sleep
 
+
 # Configuração do navegador
 chrome_options = Options()
-chrome_options.binary_location = "/usr/bin/chromium"  # caminho correto no Ubuntu
+chrome_options.add_argument("--headless")  # roda sem interface gráfica (importante no GitHub Actions)
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.binary_location = "/usr/bin/chromium-browser"  # caminho correto no GitHub Actions
 
 driver = webdriver.Chrome(options=chrome_options)
+
 
 def login_inpi(driver, usuario: str, senha: str):
     """Realiza o login no sistema do INPI"""
@@ -75,4 +79,3 @@ if __name__ == "__main__":
 
     finally:
         driver.quit()
-

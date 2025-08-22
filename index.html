@@ -2,54 +2,49 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Editor de Laudo</title>
+  <title>Editor de Laudo Livre com Line-Height</title>
   <script src="https://cdn.tiny.cloud/1/tdge0xoszz6lmzcrdgcrpng4szzj2xb45mfgzhbs6r35xx5u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
+  <textarea id="editor">
+    <!-- Comece a escrever onde quiser -->
+    Resultado: VALORES DE REFERÊNCIA: 51.0 a 117.0 mg/dL
+    MATERIAL: Soro
+    MÉTODO: Nefelometria
+    OBSERVAÇÃO: ...
+  </textarea>
 
-<textarea id="editor">
-<h3 style="display: inline-block; margin: 0;">Resultado:</h3>
-<div style="display: inline-block; width: 45%; margin-left: 55%; vertical-align: middle; font-weight: normal;">
-  <strong>VALORES DE REFERÊNCIA:</strong><br>
-  51.0 a 117.0 mg/dL
-</div>
-
-<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-  <tr>
-    <td style="width: 50%; vertical-align: top;">
-      <p><strong>MATERIAL:</strong> Soro</p>
-      <p><strong>MÉTODO:</strong> Nefelometria</p>
-    </td>
-    <td style="width: 50%; vertical-align: top; padding-left: 20px; text-align: left;">
-      <!-- Espaço reservado -->
-    </td>
-  </tr>
-</table>
-<p><strong>OBSERVAÇÃO:</strong> ...</p>
-</textarea>
-
-<script>
-  tinymce.init({
-    selector: '#editor',
-    height: 500,
-    menubar: false,
-    plugins: 'lists link',
-    toolbar: 'bold italic underline | fontsizeselect fontselect | bullist numlist | undo redo',
-    setup: function (editor) {
-      editor.on('Change KeyUp', function () {
-        const conteudo = editor.getContent();
-        window.parent.postMessage(conteudo, "*");
-      });
-    },
-    content_style: `
-      body { font-family: Arial; font-size: 14px; line-height: 1.2; }
-      table { border-collapse: collapse !important; border: none !important; }
-      td, th { border: none !important; padding: 0 8px !important; }
-      p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
-    `
-  });
-</script>
-
+  <script>
+    tinymce.init({
+      selector: '#editor',
+      height: 600,
+      menubar: true,
+      plugins: 'advlist autolink lists link image charmap print preview anchor \
+                searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount lineheight',
+      toolbar: 'undo redo | formatselect | fontselect fontsizeselect | \
+                bold italic underline strikethrough forecolor backcolor | \
+                alignleft aligncenter alignright alignjustify | \
+                bullist numlist outdent indent | removeformat | lineheight | code | help',
+      font_formats: 'Arial=arial,helvetica,sans-serif; \
+                     Courier New=courier new,courier,monospace; \
+                     Georgia=georgia,palatino,serif; \
+                     Tahoma=tahoma,verdana,sans-serif; \
+                     Times New Roman=times new roman,times,serif; \
+                     Verdana=verdana,geneva,sans-serif',
+      fontsize_formats: '10px 12px 14px 16px 18px 24px 36px',
+      setup: function(editor) {
+        editor.on('Change KeyUp', function () {
+          const conteudo = editor.getContent();
+          window.parent.postMessage(conteudo, "*");
+        });
+      },
+      content_style: `
+        body { font-family: Arial; font-size: 14px; line-height: 1.2; padding: 10px; }
+        p { margin: 0 0 8px 0; }
+        table { border-collapse: collapse !important; }
+        td, th { border: 1px solid #ccc; padding: 5px; }
+      `
+    });
+  </script>
 </body>
 </html>
-

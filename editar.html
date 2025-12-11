@@ -18,7 +18,7 @@
       return urlParams.get(param);
     }
 
-    // Pega a sigla enviada via URL (ex: ?sigla=GLI)
+    // Pega a sigla enviada via URL
     const sigla = getQueryParam("sigla");
 
     // Função para buscar o laudo pelo sigla
@@ -60,18 +60,18 @@
                       'Verdana=verdana,geneva,sans-serif',
         fontsize_formats: '10px 12px 14px 16px 18px 24px 36px',
         setup: function (editor) {
-          // Envia conteúdo atualizado para o FlutterFlow via postMessage
           editor.on('Change KeyUp', function () {
             const conteudo = editor.getContent();
             window.parent.postMessage(conteudo, "*");
           });
         },
         init_instance_callback: function (editor) {
-          // Seta o conteúdo vindo do Supabase
           editor.setContent(conteudoInicial);
         },
+
+        /* 🔥 CORREÇÃO AQUI — SEM line-height travado */
         content_style: `
-          body { font-family: Arial; font-size: 14px; line-height: 1.2; padding: 10px; }
+          body { font-family: Arial; font-size: 14px; padding: 10px; }
           p { margin: 0 0 8px 0; }
           table { border-collapse: collapse !important; }
           td, th { border: 1px solid #ccc; padding: 5px; }

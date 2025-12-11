@@ -7,21 +7,17 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // Configura o Supabase
     const supabaseUrl = 'https://txsbhqqnfhxznyokyvfi.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c2JocXFuZmh4em55b2t5dmZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1ODQ3MTIsImV4cCI6MjA2NzE2MDcxMn0.6R_XIMIpXjwq160eQkHFbmeHDCaYRbebh_SpxU_lWL4';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Função para pegar parâmetro da URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    // Pega a sigla enviada via URL
     const sigla = getQueryParam("sigla");
 
-    // Função para buscar o laudo pelo sigla
     async function carregarLaudo(sigla) {
       if (!sigla) return "<p>Sigla não informada.</p>";
       const { data, error } = await supabase
@@ -38,7 +34,6 @@
       return data.conteudo || "<p>Laudo vazio.</p>";
     }
 
-    // Inicializa o TinyMCE com conteúdo carregado do Supabase
     (async () => {
       const conteudoInicial = await carregarLaudo(sigla);
 
@@ -59,22 +54,34 @@
                       'Times New Roman=times new roman,times,serif;' +
                       'Verdana=verdana,geneva,sans-serif',
         fontsize_formats: '10px 12px 14px 16px 18px 24px 36px',
+
         setup: function (editor) {
           editor.on('Change KeyUp', function () {
             const conteudo = editor.getContent();
             window.parent.postMessage(conteudo, "*");
           });
         },
+
         init_instance_callback: function (editor) {
           editor.setContent(conteudoInicial);
         },
 
-        /* 🔥 CORREÇÃO AQUI — SEM line-height travado */
         content_style: `
           body { font-family: Arial; font-size: 14px; padding: 10px; }
           p { margin: 0 0 8px 0; }
           table { border-collapse: collapse !important; }
-          td, th { border: 1px solid #ccc; padding: 5px; }
+
+          /* 🔥 Ajuste para tabelas */
+          td, th {
+            border: 1px solid #ccc;
+            padding: 5px;
+            line-height: 1.0 !important;
+          }
+
+          td p, th p {
+            margin: 0 !important;
+            line-height: inherit !important;
+          }
         `
       });
     })();
